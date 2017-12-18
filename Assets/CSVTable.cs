@@ -28,7 +28,17 @@ public class CSVTable : IEnumerable
     /// <summary>
     /// 获取表中所有数据对象的主键
     /// </summary>
-    public List<string> DataMajorKeys { get { return _dataMajorKeys; } }
+    public List<string> DataMajorKeys
+    {
+        get
+        {
+            foreach(var majorKey in _dataObjDic.Keys)
+            {
+                _dataMajorKeys.Add(majorKey);
+            }
+            return _dataMajorKeys;
+        }
+    }
     private List<string> _dataMajorKeys;
 
     /// <summary>
@@ -40,13 +50,13 @@ public class CSVTable : IEnumerable
     /// 构造方法
     /// </summary>
     /// <param name="tableName"> 表名 </param>
-    public CSVTable(string tableName, string[] dataMajorKeys)
+    public CSVTable(string tableName, string[] attributeKeys)
     {
         _name = tableName;
 
         // init 
-        _atrributeKeys = new List<string>();
-        _dataMajorKeys = new List<string>(dataMajorKeys);
+        _atrributeKeys = new List<string>(attributeKeys);
+        _dataMajorKeys = new List<string>();
         _dataObjDic = new Dictionary<string, CSVDataObject>();
     }
 
