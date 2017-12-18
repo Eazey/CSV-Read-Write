@@ -195,7 +195,7 @@ public class CSVTable : IEnumerable
 
         foreach(var data in _dataObjDic.Values)
         {
-            content += data.ToString();
+            content += data.ToString() + "\n";
         }
 
         return content;

@@ -90,5 +90,6 @@ public class DataManager : MonoBehaviour
         _display.text += "\n" + "1003的年龄: " + _table["1002"]["姓名"];
         _table["1004"]["年龄"] = "10000";
         _display.text += "\n" + "1004新的年龄: " + _table["1004"]["年龄"];
+        _display.text += "\n" + "1001的数据: " + _table["1001"].ToString();
     }
 }

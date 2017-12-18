@@ -64,7 +64,7 @@ public class CSVDataObject : IEnumerable
         {
             foreach (var item in _atrributes)
             {
-                content += ("Key: " + item.Key + ", Value: " + item.Value + "\n");
+                content += (item.Key + ": " + item.Value + ".  ");
             }
         }
         return content;
