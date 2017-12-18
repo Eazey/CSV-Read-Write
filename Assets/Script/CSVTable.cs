@@ -26,22 +26,6 @@ public class CSVTable : IEnumerable
     private List<string> _atrributeKeys;
 
     /// <summary>
-    /// 获取表中所有数据对象的主键
-    /// </summary>
-    public List<string> DataMajorKeys
-    {
-        get
-        {
-            List<string> dataMajorKeys = new List<string>();
-            foreach (var majorKey in _dataObjDic.Keys)
-            {
-                dataMajorKeys.Add(majorKey);
-            }
-            return dataMajorKeys;
-        }
-    }
-
-    /// <summary>
     /// 存储表中所有数据对象
     /// </summary>
     private Dictionary<string, CSVDataObject> _dataObjDic;
