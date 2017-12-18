@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CSVTable
+public class CSVTable : IEnumerable
 {
     /// <summary>
     /// 获取表名
@@ -95,5 +95,63 @@ public class CSVTable
             Debug.LogError("The table not include data of this key.");
             return null;
         }
-    } 
+    }
+
+    /// <summary>
+    /// 获取数据表对象的文本内容
+    /// </summary>
+    /// <returns> 数据表文本内容 </returns>
+    public string GetContent()
+    {
+        string content = string.Empty;
+
+        return content;
+    }
+
+    /// <summary>
+    /// 通过数据表名字和数据表文本内容构造一个数据表对象
+    /// </summary>
+    /// <param name="tableName"> 数据表名字 </param>
+    /// <param name="tableContent"> 数据表文本内容 </param>
+    /// <returns> 数据表对象 </returns>
+    public static CSVTable InitTable(string tableName, string tableContent)
+    {
+        CSVTable table = new CSVTable(tableName);
+
+        return table;
+    }
+
+    /// <summary>
+    /// 迭代表中所有数据对象
+    /// </summary>
+    /// <returns> 数据对象 </returns>
+    public IEnumerator GetEnumerator()
+    {
+        if (_dataObjDic == null)
+        {
+            Debug.LogError("The table is null.");
+            yield break;
+        }
+
+        foreach (var data in _dataObjDic.Values)
+        {
+            yield return data;
+        }
+    }
+
+    /// <summary>
+    /// 获得数据表内容
+    /// </summary>
+    /// <returns> 数据表内容 </returns>
+    public override string ToString()
+    {
+        string content = string.Empty;
+
+        foreach(var data in _dataObjDic)
+        {
+            content += data.ToString();
+        }
+
+        return content;
+    }
 }
