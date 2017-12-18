@@ -61,6 +61,12 @@ public class CSVTable : IEnumerable
     /// <param name="value"> 数据对象 </param>
     private void AddDataObject(string dataMajorKey, CSVDataObject value)
     {
+        if(dataMajorKey != value.ID)
+        {
+            Debug.LogError("所设对象的主键值与给定主键值不同！设置失败！");
+            return;
+        }
+
         if (!_dataObjDic.ContainsKey(dataMajorKey))
             _dataObjDic.Add(dataMajorKey, value);
         else
@@ -83,6 +89,11 @@ public class CSVTable : IEnumerable
             Debug.LogError("The table not include data of this key.");
             return null;
         }
+    }
+
+    public void DeleteDataObject(string dataMajorKey)
+    {
+
     }
 
     /// <summary>
