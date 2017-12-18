@@ -83,5 +83,12 @@ public class DataManager : MonoBehaviour
 
         Debug.Log(_table.ToString());
         _display.text = _table.GetContent();
+
+        // Test
+        _display.text += "\n" + "1001的年龄: " + _table["1001"]["年龄"];
+        _display.text += "\n" + "1002的年龄: " + _table["1002"]["性别"];
+        _display.text += "\n" + "1003的年龄: " + _table["1002"]["姓名"];
+        _table["1004"]["年龄"] = "10000";
+        _display.text += "\n" + "1004新的年龄: " + _table["1004"]["年龄"];
     }
 }
