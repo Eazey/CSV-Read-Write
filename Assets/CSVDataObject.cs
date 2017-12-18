@@ -14,7 +14,18 @@ using UnityEngine;
 
 public class CSVDataObject : IEnumerable
 {
+    /// <summary>
+    /// 此值作为数据对象的唯一标识
+    /// </summary>
+    public string ID { get { return _id_value; } }
+    private readonly string _id_value;
+
     private Dictionary<string, string> _atrributes;
+
+    public CSVDataObject(string majorKey)
+    {
+        _id_value = majorKey;
+    }
 
     public string this[string key]
     {

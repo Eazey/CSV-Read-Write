@@ -40,13 +40,13 @@ public class CSVTable : IEnumerable
     /// 构造方法
     /// </summary>
     /// <param name="tableName"> 表名 </param>
-    public CSVTable(string tableName)
+    public CSVTable(string tableName, string[] dataMajorKeys)
     {
         _name = tableName;
 
         // init 
         _atrributeKeys = new List<string>();
-        _dataMajorKeys = new List<string>();
+        _dataMajorKeys = new List<string>(dataMajorKeys);
         _dataObjDic = new Dictionary<string, CSVDataObject>();
     }
 
@@ -54,7 +54,7 @@ public class CSVTable : IEnumerable
     /// 提供类似于键值对的访问方式便捷获取和设置数据对象
     /// </summary>
     /// <param name="key"> 数据对象主键 </param>
-    /// <returns></returns>
+    /// <returns> 数据对象 </returns>
     public CSVDataObject this[string dataMajorKey]
     {
         get { return GetDataObject(dataMajorKey); }
@@ -69,14 +69,9 @@ public class CSVTable : IEnumerable
     private void AddDataObject(string dataMajorKey, CSVDataObject value)
     {
         if (!_dataObjDic.ContainsKey(dataMajorKey))
-        {
             _dataObjDic.Add(dataMajorKey, value);
-            _dataMajorKeys.Add(dataMajorKey);
-        }
         else
-        {
             _dataObjDic[dataMajorKey] = value;
-        }
     }
 
     /// <summary>
@@ -105,6 +100,22 @@ public class CSVTable : IEnumerable
     {
         string content = string.Empty;
 
+        foreach(string key in _dataMajorKeys)
+        {
+            content += (key + ",");
+        }
+        content.Remove(content.Length - 1);
+
+        foreach(CSVDataObject data in _dataObjDic.Values)
+        {
+            content += "\n" + data.ID + ",";
+            foreach (KeyValuePair<string,string> item in data)
+            {
+                content += item.Value + ",";
+            }
+            content.Remove(content.Length - 1);
+        }
+
         return content;
     }
 
@@ -116,7 +127,32 @@ public class CSVTable : IEnumerable
     /// <returns> 数据表对象 </returns>
     public static CSVTable InitTable(string tableName, string tableContent)
     {
-        CSVTable table = new CSVTable(tableName);
+        string content = tableContent.Replace("\r", "");
+        string[] lines = content.Split('\n');
+        if (lines.Length < 2)
+        {
+            Debug.LogError("The csv file is not csv table format.");
+            return null;
+        }
+
+        string keyLine = lines[0];
+        string[] keys = keyLine.Split(',');
+        CSVTable table = new CSVTable(tableName, keys);   
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string[] values = lines[i].Split(',');
+            string majorKey = values[0].Trim();
+            CSVDataObject dataObj = new CSVDataObject(majorKey);
+
+            for (int j = 1; j < values.Length; j++)
+            {
+                string key = keys[j].Trim();
+                string value = values[j].Trim();
+                dataObj[key] = value;
+            }
+            table[dataObj.ID] = dataObj;
+        }
 
         return table;
     }
