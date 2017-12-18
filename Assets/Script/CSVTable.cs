@@ -32,15 +32,14 @@ public class CSVTable : IEnumerable
     {
         get
         {
-            _dataMajorKeys = new List<string>();
+            List<string> dataMajorKeys = new List<string>();
             foreach (var majorKey in _dataObjDic.Keys)
             {
-                _dataMajorKeys.Add(majorKey);
+                dataMajorKeys.Add(majorKey);
             }
-            return _dataMajorKeys;
+            return dataMajorKeys;
         }
     }
-    private List<string> _dataMajorKeys;
 
     /// <summary>
     /// 存储表中所有数据对象
