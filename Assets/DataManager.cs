@@ -16,23 +16,26 @@ using System;
 
 public class DataManager : MonoBehaviour
 {
-    string _readPath = Application.dataPath + "/Read/";
-    string _savePath = Application.dataPath + "/Save/";
+    string _loadPath;
+    string _savePath;
 
     [SerializeField] private string _fileName = "TestTable";
     private const string EXTENSION = ".csv";
 
     [SerializeField] private Button _saveBtn;
-    [SerializeField] private Button _readBtn;
-
+    [SerializeField] private Button _loadBtn;
+    [SerializeField] private Text _display;
 
     private CSVTable _table;
 
     // Bind Component
     void Awake()
     {
+        _loadPath = Application.dataPath + "/Load/";
+        _savePath = Application.dataPath + "/Save/";
+
         _saveBtn.onClick.AddListener(Save);
-        _readBtn.onClick.AddListener(Read);
+        _loadBtn.onClick.AddListener(Load);
     }
 
     private void Save()
@@ -56,25 +59,29 @@ public class DataManager : MonoBehaviour
         sw.Write(tableContent);
         sw.Close();
         sw.Dispose();
+
+        _table = null;
+        _display.text = "Save.";
     }
 
-    private void Read()
+    private void Load()
     {
-        if (!Directory.Exists(_readPath))
+        if (!Directory.Exists(_loadPath))
         {
-            Debug.LogError("The file not be found in this path. path:" + _readPath);
+            Debug.LogError("The file not be found in this path. path:" + _loadPath);
             return;
         }
 
-        string fullFileName = _readPath + _fileName + EXTENSION;
+        string fullFileName = _loadPath + _fileName + EXTENSION;
         StreamReader sr;
         sr = File.OpenText(fullFileName);
         string content = sr.ReadToEnd();
         sr.Close();
         sr.Dispose();
 
-        _table = CSVTable.InitTable(_fileName, content);
+        _table = CSVTable.CreateTable(_fileName, content);
 
         Debug.Log(_table.ToString());
+        _display.text = _table.GetContent();
     }
 }

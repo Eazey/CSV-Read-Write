@@ -32,7 +32,8 @@ public class CSVTable : IEnumerable
     {
         get
         {
-            foreach(var majorKey in _dataObjDic.Keys)
+            _dataMajorKeys = new List<string>();
+            foreach (var majorKey in _dataObjDic.Keys)
             {
                 _dataMajorKeys.Add(majorKey);
             }
@@ -56,7 +57,6 @@ public class CSVTable : IEnumerable
 
         // init 
         _atrributeKeys = new List<string>(attributeKeys);
-        _dataMajorKeys = new List<string>();
         _dataObjDic = new Dictionary<string, CSVDataObject>();
     }
 
@@ -110,20 +110,20 @@ public class CSVTable : IEnumerable
     {
         string content = string.Empty;
 
-        foreach(string key in _dataMajorKeys)
+        foreach(string key in _atrributeKeys)
         {
-            content += (key + ",");
+            content += (key + ",").Trim();
         }
-        content.Remove(content.Length - 1);
+        content = content.Remove(content.Length - 1);
 
-        foreach(CSVDataObject data in _dataObjDic.Values)
+        foreach (CSVDataObject data in _dataObjDic.Values)
         {
             content += "\n" + data.ID + ",";
             foreach (KeyValuePair<string,string> item in data)
             {
-                content += item.Value + ",";
+                content += (item.Value + ",").Trim();
             }
-            content.Remove(content.Length - 1);
+            content = content.Remove(content.Length - 1);
         }
 
         return content;
@@ -135,7 +135,7 @@ public class CSVTable : IEnumerable
     /// <param name="tableName"> 数据表名字 </param>
     /// <param name="tableContent"> 数据表文本内容 </param>
     /// <returns> 数据表对象 </returns>
-    public static CSVTable InitTable(string tableName, string tableContent)
+    public static CSVTable CreateTable(string tableName, string tableContent)
     {
         string content = tableContent.Replace("\r", "");
         string[] lines = content.Split('\n');
@@ -193,7 +193,7 @@ public class CSVTable : IEnumerable
     {
         string content = string.Empty;
 
-        foreach(var data in _dataObjDic)
+        foreach(var data in _dataObjDic.Values)
         {
             content += data.ToString();
         }

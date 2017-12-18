@@ -25,6 +25,8 @@ public class CSVDataObject : IEnumerable
     public CSVDataObject(string majorKey)
     {
         _id_value = majorKey;
+
+        _atrributes = new Dictionary<string, string>();
     }
 
     public string this[string key]
