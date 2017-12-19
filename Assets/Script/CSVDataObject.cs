@@ -17,52 +17,50 @@ public class CSVDataObject : IEnumerable
     /// <summary>
     /// 此值作为数据对象的唯一标识
     /// </summary>
-    public string ID { get { return _id_value; } }
-    private readonly string _id_value;
+    public string ID { get { return _major; } }
+    private readonly string _major;
 
-    private Dictionary<string, string> _atrributes;
+    private Dictionary<string, string> _atrributesDic;
 
-    public CSVDataObject(string majorKey)
+    public CSVDataObject(string major, Dictionary<string, string> atrributeDic)
     {
-        _id_value = majorKey;
-
-        _atrributes = new Dictionary<string, string>();
+        _major = major;
+        _atrributesDic = atrributeDic;
     }
 
     public string this[string key]
     {
         get { return GetValue(key); }
-        set { AddKey(key, value); }
+        set { SetKey(key, value); }
     }
 
-    private void AddKey(string key, string value)
+    private void SetKey(string key, string value)
     {
-        if (!_atrributes.ContainsKey(key))
-            _atrributes.Add(key, value);
+        if (_atrributesDic.ContainsKey(key))
+            _atrributesDic[key] = value;
         else
-            _atrributes[key] = value;
+            Debug.LogError("The data not include the key.");
     }
 
     private string GetValue(string key)
     {
-        if (_atrributes.ContainsKey(key))
-        {
-            return _atrributes[key];
-        }
+        string value = string.Empty;
+
+        if (_atrributesDic.ContainsKey(key))
+            value = _atrributesDic[key];
         else
-        {
             Debug.LogError("The data not include value of this key.");
-            return string.Empty;
-        }
+
+        return value;
     }
 
     public override string ToString()
     {
         string content = string.Empty;
 
-        if (_atrributes != null)
+        if (_atrributesDic != null)
         {
-            foreach (var item in _atrributes)
+            foreach (var item in _atrributesDic)
             {
                 content += (item.Key + ": " + item.Value + ".  ");
             }
@@ -72,13 +70,7 @@ public class CSVDataObject : IEnumerable
 
     public IEnumerator GetEnumerator()
     {
-        if (_atrributes == null)
-        {
-            Debug.LogError("The data is null.");
-            yield break;
-        }
-
-        foreach (var item in _atrributes)
+        foreach (var item in _atrributesDic)
         {
             yield return item;
         }

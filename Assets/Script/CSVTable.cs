@@ -67,9 +67,6 @@ public class CSVTable : IEnumerable
             return;
         }
 
-        if (_dataObjDic == null)
-            _dataObjDic = new Dictionary<string, CSVDataObject>();
-
         if (!_dataObjDic.ContainsKey(dataMajorKey))
             _dataObjDic.Add(dataMajorKey, value);
         else
@@ -83,32 +80,27 @@ public class CSVTable : IEnumerable
     /// <returns> 数据对象 </returns>
     private CSVDataObject GetDataObject(string dataMajorKey)
     {
+        CSVDataObject data = null;
+
         if (_dataObjDic.ContainsKey(dataMajorKey))
-        {
-            return _dataObjDic[dataMajorKey];
-        }
+            data = _dataObjDic[dataMajorKey];
         else
-        {
             Debug.LogError("The table not include data of this key.");
-            return null;
-        }
+
+        return data;
     }
 
     public void DeleteDataObject(string dataMajorKey)
     {
-        if (!_dataObjDic.ContainsKey(dataMajorKey))
-            Debug.LogError("The table not include the key.");
-        else
+        if (_dataObjDic.ContainsKey(dataMajorKey))
             _dataObjDic.Remove(dataMajorKey);
+        else
+            Debug.LogError("The table not include the key.");     
     }
 
     public void DeleteAllDataObject()
     {
-        if (_dataObjDic != null)
-        {
-            _dataObjDic.Clear();
-            _dataObjDic = null;
-        }
+        _dataObjDic.Clear();
     }
 
     /// <summary>
@@ -124,6 +116,12 @@ public class CSVTable : IEnumerable
             content += (key + ",").Trim();
         }
         content = content.Remove(content.Length - 1);
+
+        if (_dataObjDic.Count == 0)
+        {
+            Debug.LogWarning("The table is empty, fuction named 'GetContent()' will retrun key's list.");
+            return content;
+        }
 
         foreach (CSVDataObject data in _dataObjDic.Values)
         {
@@ -161,15 +159,15 @@ public class CSVTable : IEnumerable
         for (int i = 1; i < lines.Length; i++)
         {
             string[] values = lines[i].Split(',');
-            string majorKey = values[0].Trim();
-            CSVDataObject dataObj = new CSVDataObject(majorKey);
-
+            string major = values[0].Trim();   
+            Dictionary<string, string> tempDic = new Dictionary<string, string>();
             for (int j = 1; j < values.Length; j++)
             {
                 string key = keys[j].Trim();
                 string value = values[j].Trim();
-                dataObj[key] = value;
+                tempDic.Add(key, value);
             }
+            CSVDataObject dataObj = new CSVDataObject(major, tempDic);
             table[dataObj.ID] = dataObj;
         }
 
@@ -184,7 +182,7 @@ public class CSVTable : IEnumerable
     {
         if (_dataObjDic == null)
         {
-            Debug.LogError("The table is null.");
+            Debug.LogWarning("The table is empty.");
             yield break;
         }
 
