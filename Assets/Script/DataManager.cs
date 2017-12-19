@@ -3,7 +3,7 @@
 // Product Name : CSV_Read&Write
 // Company Name : MOESTONE
 // Author  Name : Eazey Wang
-// Editor  Data : 2017/12/18
+// Create  Data : 2017/12/18
 // ------------------------------ //
 
 using System.Collections;
