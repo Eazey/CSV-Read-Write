@@ -81,6 +81,9 @@ public class DataManager : MonoBehaviour
 
         _table = CSVTable.CreateTable(_fileName, content);
 
+
+        //以下为测试
+
         // 显示所有数据（以调试格式显示)
         Debug.Log(_table.ToString());
 
@@ -95,13 +98,25 @@ public class DataManager : MonoBehaviour
         _table["1003"]["年龄"] = "10000";
         _display.text += "\n" + "1003新的年龄: " + _table["1003"]["年龄"];
 
-        _table.DeleteAllDataObject();
-        foreach(CSVDataObject item in _table)
-        {
-            Debug.Log(item.ToString());
-        }
+        // 添加一条数据
+        CSVDataObject data = new CSVDataObject("1005",
+            new Dictionary<string, string>()
+            {
+                { "姓名","hahaha" },
+                { "年龄","250" },
+                { "性别","随便吧" },
+            },
+            new string[] { "编号", "姓名", "年龄", "性别" });
+        _table[data.ID] = data;
+        _display.text += "\n" + "新添加的1005的数据: " + _table["1005"].ToString();
 
-        _table.DeleteDataObject("111");
-        Debug.Log(_table["222"]);
+        // 删除数据
+        _table.DeleteDataObject("1001");
+        _table.DeleteDataObject("1002");
+        _display.text += "\n" + "删了两个之后：" + "\n" + _table.GetContent();
+
+        // 删除所有数据
+        _table.DeleteAllDataObject();
+        _display.text += "\n" + "还剩下:" + "\n" + _table.GetContent();
     }
 }

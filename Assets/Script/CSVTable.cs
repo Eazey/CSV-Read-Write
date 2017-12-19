@@ -44,6 +44,20 @@ public class CSVTable : IEnumerable
     }
 
     /// <summary>
+    /// 获取数据表对象的签名，用于比较是否与数据对象的签名一致
+    /// </summary>
+    /// <returns> 数据表对象的签名 </returns>
+    public string GetFormat()
+    {
+        string format = string.Empty;
+        foreach (string key in _atrributeKeys)
+        {
+            format += (key + "-");
+        }
+        return format;
+    }
+
+    /// <summary>
     /// 提供类似于键值对的访问方式便捷获取和设置数据对象
     /// </summary>
     /// <param name="key"> 数据对象主键 </param>
@@ -61,16 +75,25 @@ public class CSVTable : IEnumerable
     /// <param name="value"> 数据对象 </param>
     private void AddDataObject(string dataMajorKey, CSVDataObject value)
     {
-        if(dataMajorKey != value.ID)
+        if (dataMajorKey != value.ID)
         {
             Debug.LogError("所设对象的主键值与给定主键值不同！设置失败！");
             return;
         }
 
-        if (!_dataObjDic.ContainsKey(dataMajorKey))
-            _dataObjDic.Add(dataMajorKey, value);
-        else
-            _dataObjDic[dataMajorKey] = value;
+        if (value.GetFormat() != GetFormat())
+        {
+            Debug.LogError("所设对象的的签名与表的签名不同！设置失败！");
+            return;
+        }
+
+        if (_dataObjDic.ContainsKey(dataMajorKey))
+        {
+            Debug.LogError("表中已经存在主键为 '" + dataMajorKey + "' 的对象！设置失败！");
+            return;
+        }
+
+        _dataObjDic.Add(dataMajorKey, value);
     }
 
     /// <summary>
@@ -126,9 +149,9 @@ public class CSVTable : IEnumerable
 
         if (_dataObjDic.Count == 0)
         {
-            Debug.LogWarning("The table is empty, fuction named 'GetContent()' will retrun key's list.");
+            Debug.LogWarning("The table is empty, fuction named 'GetContent()' will just retrun key's list.");
             return content;
-        }
+        } 
 
         foreach (CSVDataObject data in _dataObjDic.Values)
         {
@@ -141,45 +164,7 @@ public class CSVTable : IEnumerable
         }
 
         return content;
-    }
-
-    /// <summary>
-    /// 通过数据表名字和数据表文本内容构造一个数据表对象
-    /// </summary>
-    /// <param name="tableName"> 数据表名字 </param>
-    /// <param name="tableContent"> 数据表文本内容 </param>
-    /// <returns> 数据表对象 </returns>
-    public static CSVTable CreateTable(string tableName, string tableContent)
-    {
-        string content = tableContent.Replace("\r", "");
-        string[] lines = content.Split('\n');
-        if (lines.Length < 2)
-        {
-            Debug.LogError("The csv file is not csv table format.");
-            return null;
-        }
-
-        string keyLine = lines[0];
-        string[] keys = keyLine.Split(',');
-        CSVTable table = new CSVTable(tableName, keys);   
-
-        for (int i = 1; i < lines.Length; i++)
-        {
-            string[] values = lines[i].Split(',');
-            string major = values[0].Trim();   
-            Dictionary<string, string> tempDic = new Dictionary<string, string>();
-            for (int j = 1; j < values.Length; j++)
-            {
-                string key = keys[j].Trim();
-                string value = values[j].Trim();
-                tempDic.Add(key, value);
-            }
-            CSVDataObject dataObj = new CSVDataObject(major, tempDic);
-            table[dataObj.ID] = dataObj;
-        }
-
-        return table;
-    }
+    }  
 
     /// <summary>
     /// 迭代表中所有数据对象
@@ -213,5 +198,43 @@ public class CSVTable : IEnumerable
         }
 
         return content;
+    }
+
+    /// <summary>
+    /// 通过数据表名字和数据表文本内容构造一个数据表对象
+    /// </summary>
+    /// <param name="tableName"> 数据表名字 </param>
+    /// <param name="tableContent"> 数据表文本内容 </param>
+    /// <returns> 数据表对象 </returns>
+    public static CSVTable CreateTable(string tableName, string tableContent)
+    {
+        string content = tableContent.Replace("\r", "");
+        string[] lines = content.Split('\n');
+        if (lines.Length < 2)
+        {
+            Debug.LogError("The csv file is not csv table format.");
+            return null;
+        }
+
+        string keyLine = lines[0];
+        string[] keys = keyLine.Split(',');
+        CSVTable table = new CSVTable(tableName, keys);
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string[] values = lines[i].Split(',');
+            string major = values[0].Trim();
+            Dictionary<string, string> tempAttributeDic = new Dictionary<string, string>();
+            for (int j = 1; j < values.Length; j++)
+            {
+                string key = keys[j].Trim();
+                string value = values[j].Trim();
+                tempAttributeDic.Add(key, value);
+            }
+            CSVDataObject dataObj = new CSVDataObject(major, tempAttributeDic, keys);
+            table[dataObj.ID] = dataObj;
+        }
+
+        return table;
     }
 }
