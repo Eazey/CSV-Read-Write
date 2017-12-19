@@ -81,17 +81,19 @@ public class DataManager : MonoBehaviour
 
         _table = CSVTable.CreateTable(_fileName, content);
 
+        // 显示所有数据（以调试格式显示)
         Debug.Log(_table.ToString());
+
+        // 显示所有数据（以存储格式显示）
         _display.text = _table.GetContent();
 
-        // Test
+        // 拿到某一数据
         _display.text += "\n" + "1001的年龄: " + _table["1001"]["年龄"];
-        _display.text += "\n" + "1002的年龄: " + _table["1002"]["性别"];
-        _display.text += "\n" + "1003的年龄: " + _table["1002"]["姓名"];
-        _table["1004"]["年龄"] = "10000";
-        _display.text += "\n" + "1004新的年龄: " + _table["1004"]["年龄"];
-        _display.text += "\n" + "1001的数据: " + _table["1001"].ToString();
-
+        // 拿到数据对象
+        _display.text += "\n" + "1002的数据: " + _table["1002"].ToString();
+        // 修改某一数据
+        _table["1003"]["年龄"] = "10000";
+        _display.text += "\n" + "1003新的年龄: " + _table["1003"]["年龄"];
 
         _table.DeleteAllDataObject();
         foreach(CSVDataObject item in _table)

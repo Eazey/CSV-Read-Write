@@ -22,6 +22,11 @@ public class CSVDataObject : IEnumerable
 
     private Dictionary<string, string> _atrributesDic;
 
+    /// <summary>
+    /// 初始化，获取唯一标识与所有属性的键与值
+    /// </summary>
+    /// <param name="major"> 唯一标识，主键 </param>
+    /// <param name="atrributeDic"> 所有属性键值字典 </param>
     public CSVDataObject(string major, Dictionary<string, string> atrributeDic)
     {
         _major = major;

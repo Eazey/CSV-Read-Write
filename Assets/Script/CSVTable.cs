@@ -90,6 +90,10 @@ public class CSVTable : IEnumerable
         return data;
     }
 
+    /// <summary>
+    /// 根据数据对象主键删除对应数据对象
+    /// </summary>
+    /// <param name="dataMajorKey"> 数据对象主键 </param>
     public void DeleteDataObject(string dataMajorKey)
     {
         if (_dataObjDic.ContainsKey(dataMajorKey))
@@ -98,6 +102,9 @@ public class CSVTable : IEnumerable
             Debug.LogError("The table not include the key.");     
     }
 
+    /// <summary>
+    /// 删除所有所有数据对象
+    /// </summary>
     public void DeleteAllDataObject()
     {
         _dataObjDic.Clear();
