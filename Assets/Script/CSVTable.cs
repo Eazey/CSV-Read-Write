@@ -67,6 +67,9 @@ public class CSVTable : IEnumerable
             return;
         }
 
+        if (_dataObjDic == null)
+            _dataObjDic = new Dictionary<string, CSVDataObject>();
+
         if (!_dataObjDic.ContainsKey(dataMajorKey))
             _dataObjDic.Add(dataMajorKey, value);
         else
@@ -93,7 +96,19 @@ public class CSVTable : IEnumerable
 
     public void DeleteDataObject(string dataMajorKey)
     {
+        if (!_dataObjDic.ContainsKey(dataMajorKey))
+            Debug.LogError("The table not include the key.");
+        else
+            _dataObjDic.Remove(dataMajorKey);
+    }
 
+    public void DeleteAllDataObject()
+    {
+        if (_dataObjDic != null)
+        {
+            _dataObjDic.Clear();
+            _dataObjDic = null;
+        }
     }
 
     /// <summary>
