@@ -38,6 +38,33 @@ public class DataManager : MonoBehaviour
         _loadBtn.onClick.AddListener(Load);
     }
 
+    /// <summary>
+    /// 加载文件
+    /// </summary>
+    private void Load()
+    {
+        if (!Directory.Exists(_loadPath))
+        {
+            Debug.LogError("The file not be found in this path. path:" + _loadPath);
+            return;
+        }
+
+        string fullFileName = _loadPath + _fileName + EXTENSION;
+        StreamReader sr;
+        sr = File.OpenText(fullFileName);
+        string content = sr.ReadToEnd();
+        sr.Close();
+        sr.Dispose();
+
+        _table = CSVTable.CreateTable(_fileName, content);
+
+        // 添加测试
+        Test();
+    }
+
+    /// <summary>
+    /// 存储文件
+    /// </summary>
     private void Save()
     {
         if (_table == null)
@@ -64,26 +91,11 @@ public class DataManager : MonoBehaviour
         _display.text = "Save.";
     }
 
-    private void Load()
+    /// <summary>
+    /// 测试方法
+    /// </summary>
+    private void Test()
     {
-        if (!Directory.Exists(_loadPath))
-        {
-            Debug.LogError("The file not be found in this path. path:" + _loadPath);
-            return;
-        }
-
-        string fullFileName = _loadPath + _fileName + EXTENSION;
-        StreamReader sr;
-        sr = File.OpenText(fullFileName);
-        string content = sr.ReadToEnd();
-        sr.Close();
-        sr.Dispose();
-
-        _table = CSVTable.CreateTable(_fileName, content);
-
-
-        //以下为测试
-
         // 显示所有数据（以调试格式显示)
         Debug.Log(_table.ToString());
 
